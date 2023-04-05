@@ -1,3 +1,3 @@
-# Extracción de definiciones analíticas. 
+# Extracción automática de definiciones analíticas. 
 
-Se comaprten los códigos para extraer definiciones analíticas de wikipedia en español. 
+Se comparten los códigos para extraer definiciones analíticas de wikipedia en español. 
