@@ -1,0 +1,34 @@
+import re
+import tempfile
+import shutil
+import os
+
+# Definir la expresión regular a buscar
+pattern = re.compile(r'(?i)\b(?:El|La|Los|Las|Un|Una|Unos|Unas)\b\s+\w+\s+\b(?:es)\b\s+\b(?:El|La|Los|Las|Un|Una|Unos|Unas)\b\s+\w+\s+\b(?:que)\b.*?\.')
+
+# Función para procesar el archivo de texto y buscar coincidencias con la expresión regular
+def process_text(text_file_path, output_file_path, chunk_size=1024*1024):
+    print(f"Leyendo archivo: {text_file_path}")
+    with open(text_file_path, 'r') as f:
+        with tempfile.TemporaryFile(mode='w+') as temp_file:
+            chunk_count = 0
+            matches_count = 0
+            while True:
+                data = f.read(chunk_size)
+                if not data:
+                    break
+                chunk_count += 1
+                for match in pattern.finditer(data):
+                    matches_count += 1
+                    temp_file.write(f"{os.path.basename(text_file_path)}:{match.group()}\n")
+
+            # Copiar el contenido del archivo temporal al archivo de salida
+            print(f"Escribiendo en archivo: {output_file_path}")
+            temp_file.seek(0)
+            with open(output_file_path, 'w') as output_file:
+                shutil.copyfileobj(temp_file, output_file)
+            print(f"{matches_count} coincidencias encontradas en {chunk_count} chunks")
+
+# Procesar el archivo de texto
+if __name__ == '__main__':
+    process_text('/content/drive/MyDrive/wikipedia/wikipedia_archivo.txt', '/content/drive/MyDrive/wikipedia/matches.txt', chunk_size=1024*1024*1)
